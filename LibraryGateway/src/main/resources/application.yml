@@ -1,0 +1,30 @@
+server:
+  port: 80
+spring:
+  application:
+    name: library-gateway
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      username: nacos
+      password: nacos
+      discovery:
+        namespace: 32125593-fc00-4fb5-883c-d2b984cc08a2
+        group: Library
+    gateway:
+      discovery:
+        locator:
+          enabled: true #开启动态路由
+          lower-case-service-id: true #服务名称小写
+      enabled: true
+      routes:
+        -  id: borrow-service-route
+           uri: lb://borrow-service
+           predicates: #断言工厂是给某一个路由来设置的
+              - Path=/bookrecord/**
+        -  id: student-service-route
+           uri: lb://book-service
+           predicates: #断言工厂是给某一个路由来设置的
+              - Path=/bookinfo/**
+jwt:
+  secretKey: martinzoumartinzoumartinzoumartinzoumartinzoumartinzoumartinzoumartinzoumartinzou

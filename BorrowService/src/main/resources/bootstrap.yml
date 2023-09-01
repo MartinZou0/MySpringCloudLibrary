@@ -1,0 +1,25 @@
+#配置端口
+server:
+  port: 8082
+spring:
+  application:
+    name: borrow-service
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      username: nacos
+      password: nacos
+      discovery: # 这里是和注册相关的配置
+        namespace: 32125593-fc00-4fb5-883c-d2b984cc08a2
+        group: Library
+      config: #读两个配置文件
+          file-extension: yaml
+          server-addr: localhost:8848
+          namespace: 32125593-fc00-4fb5-883c-d2b984cc08a2
+          group: Library #经过这个测试，你指定了命名空间和group之后，会默认去在该命名空间下的
+          shared-configs:
+            - dataId: application-dev.yaml
+              group: DEFAULT_GROUP
+              refresh: true
+
+

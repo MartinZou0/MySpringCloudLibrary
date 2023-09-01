@@ -1,0 +1,47 @@
+#配置端口
+server:
+  port: 8081
+spring:
+
+  application:
+    name: book-service
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      username: nacos
+      password: nacos
+      discovery: # 这里是和注册相关的配置
+        namespace: 32125593-fc00-4fb5-883c-d2b984cc08a2
+        group: Library
+      config: #读两个配置文件
+        file-extension: yaml
+        server-addr: localhost:8848
+        namespace: 32125593-fc00-4fb5-883c-d2b984cc08a2
+        group: Library #经过这个测试，你指定了命名空间和group之后，会默认去在该命名空间下的
+        #去找应用名相同的配置文件，如果设置了prefix那么就按照prefix设置的值来找
+        #如果没有的话就开始去找extension-configs。读取的文件顺序也是先默认找应用名相同(prefix)的配置文件
+        #后面则是按照配置文件中的添加顺序进行读取。已读取文件的内容，后续文件会对属性进行覆盖
+        #但是需要注意的是，如果项目已经找到了应用名相同的配置文件，在实体类属性注入这个场景下
+        #默认配置文件的内容赋值到实体类之后，有内容的字段值就不会再进行变动。没有相应的字段值，由extension-configs中的文件来决定，并会随着读取进度来进行更新相应的字段
+        #怎么理解呢，有两个配置文件A,B。按照读取顺序是先读取A再读取B,A中设置字段为为name:蒙多想去哪儿就去哪儿 B中设置字段为name：机械先驱维克托。那么注入到类属性中name变量的值其实就是为机械先驱维克托
+        extension-configs: #可以读多个配置文件 需要在同一命名空间下面 可以是不同的组
+          - dataId: book-service-3.yaml
+            group: DEFAULT_GROUP
+            refresh: true  #动态刷新需要加入该项配置
+          - dataId: book-service-2.yaml
+            group: DEFAULT_GROUP
+            refresh: true
+        #每一个微服务基本上都需要写数据库连接消息啥的，这一类的公共配置部分
+        #就可以把公共的配置抽离出来
+        shared-configs:
+          - dataId: application-dev.yaml
+            group: DEFAULT_GROUP
+            refresh: true
+
+
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+
